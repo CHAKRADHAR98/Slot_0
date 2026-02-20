@@ -1,91 +1,105 @@
-# Gather Clone
+# Slot 0
 
-[Watch the demo](https://www.youtube.com/watch?v=AnhsC7Fmt20)
+A Gather.town-inspired metaverse platform with customizable spaces, proximity-based video chat, and an on-chain prediction market protocol built on Solana.
 
-A clone of Gather.town featuring fully customizable spaces and seamless proximity based video chat.
-
-The project is a fork of Realms, my previous project inspired by Gather. You can check it out [here.](https://github.com/trevorwrightdev/realms)
-
-The app was designed to include the core features of Gather, including:
+Features:
 
 - Customizable spaces using tilesets
 - Proximity video chat
-- Private area video chat 
+- Private area video chat
 - Multiplayer networking
 - Tile-based movement
+- On-chain prediction markets (Solana / Anchor)
 
-Built as a TypeScript web app primarily using Next.js, PostgreSQL, Socket.io, TailwindCSS, Pixi.js, and Agora for video chat. 
+Built with Next.js, PostgreSQL, Socket.io, TailwindCSS, Pixi.js, Agora for video chat, and Anchor (Rust) for the Solana smart contract.
 
-### Prerequisites
+## Project Structure
 
-- Node.js 18+ 
+- `/frontend` - Next.js frontend application (Pixi.js game, Agora video, Tailwind UI)
+- `/backend` - Express.js backend server with Socket.io and JWT auth
+- `/backend/schema.sql` - PostgreSQL database schema
+- `/gather` - Solana smart contract (Anchor/Rust) — prediction market protocol
+
+## Prerequisites
+
+- Node.js 18+
 - PostgreSQL database
 - Agora account (for video chat)
+- Rust + Anchor CLI (for Solana program, optional)
 
-### How to install
+## Installation
 
-First, clone the repo.
-`git clone https://github.com/trevorwrightdev/gather-clone.git`
+Clone the repo:
+```bash
+git clone https://github.com/CHAKRADHAR98/Slot_0.git
+cd Slot_0
+```
 
-Install client dependencies.
+Install frontend dependencies:
 ```bash
 cd frontend
 npm install
 ```
 
-Install server dependencies.
+Install backend dependencies:
 ```bash
 cd backend
 npm install
 ```
 
-### Database Setup
+## Database Setup
 
-1. Create a PostgreSQL database (e.g., `game1`)
+1. Create a PostgreSQL database (e.g., `slot0`)
 2. Run the schema file to create tables:
 ```bash
-psql -U postgres -d game1 -f backend/schema.sql
+psql -U postgres -d slot0 -f backend/schema.sql
 ```
 
-### Environment Variables
+## Environment Variables
 
-Create a `.env` file in the `backend` directory with the following variables:
+Create a `.env` file in the `backend` directory:
 ```
 FRONTEND_URL=http://localhost:3000
-DATABASE_URL=postgresql://postgres:123456789@localhost:5432/game1
+DATABASE_URL=postgresql://postgres:your-password@localhost:5432/slot0
 JWT_SECRET=your-secret-key-change-in-production
 ```
 
-Create a `.env.local` file in the `frontend` directory with the following variables:
+Create a `.env.local` file in the `frontend` directory:
 ```
 NEXT_PUBLIC_BACKEND_URL=http://localhost:3001
 NEXT_PUBLIC_AGORA_APP_ID=your-agora-app-id
 ```
 
-For the video chat feature, you'll need to create an account at [Agora](https://www.agora.io/) and get an App ID.
+For video chat, create an account at [Agora](https://www.agora.io/) and get an App ID.
 
-### Running the Application
+## Running the Application
 
-1. Start the backend server:
+Start the backend server:
 ```bash
 cd backend
 npm run dev
 ```
 
-2. In a new terminal, start the frontend:
+In a new terminal, start the frontend:
 ```bash
 cd frontend
 npm run dev
 ```
 
-3. Open http://localhost:3000 in your browser
+Open http://localhost:3000 in your browser.
 
-### Default Login
+## Authentication
 
-The application uses username/password authentication. Register a new account or use the application without video chat features (Agora setup required for video).
+The application uses username/password authentication. Register a new account through the UI. Video chat requires Agora setup.
 
-## Project Structure
+## Solana Program (Optional)
 
-- `/frontend` - Next.js frontend application
-- `/backend` - Express.js backend server with Socket.io
-- `/backend/schema.sql` - PostgreSQL database schema
+The `gather/` directory contains an Anchor program implementing a prediction market protocol on Solana. To build and deploy:
+
+```bash
+cd gather
+anchor build
+anchor deploy
+```
+
+Requires Rust, Solana CLI, and Anchor CLI installed.
