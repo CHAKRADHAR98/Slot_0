@@ -1,3 +1,5 @@
+require('dotenv').config({ override: true })
+
 import express from 'express'
 import cors from 'cors'
 import http from 'http'
@@ -7,8 +9,6 @@ import routes from './routes/routes'
 import { authRoutes } from './auth/routes'
 import { sessionManager } from './session'
 import pool from './db'
-
-require('dotenv').config()
 
 const app = express()
 const server = http.createServer(app)

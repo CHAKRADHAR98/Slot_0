@@ -1,5 +1,5 @@
 'use client'
-import { createContext, useContext, useState, ReactNode, FC, useEffect } from 'react'
+import { createContext, useContext, useState, useMemo, ReactNode, FC, useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 
 type Modal = 'None' | 'Create Realm' | 'Account Dropdown' | 'Loading' | 'Delete Room' | 'Teleport' | 'Delete Realm' | 'Skin' 
@@ -81,23 +81,23 @@ export const ModalProvider: FC<ModalProviderProps> = ({ children }) => {
     const [errorModal, setErrorModal] = useState<ErrorModal>('None')
     const pathname = usePathname()
 
-    const value: ModalContextType = { 
-        modal, 
-        setModal, 
-        roomToDelete, 
-        setRoomToDelete, 
-        roomList, setRoomList, 
-        realmToDelete, 
-        setRealmToDelete, 
-        loadingText, 
-        setLoadingText, 
-        failedConnectionMessage, 
-        setFailedConnectionMessage, 
-        disconnectedMessage, 
+    const value: ModalContextType = useMemo(() => ({
+        modal,
+        setModal,
+        roomToDelete,
+        setRoomToDelete,
+        roomList, setRoomList,
+        realmToDelete,
+        setRealmToDelete,
+        loadingText,
+        setLoadingText,
+        failedConnectionMessage,
+        setFailedConnectionMessage,
+        disconnectedMessage,
         setDisconnectedMessage,
         errorModal,
         setErrorModal,
-    }
+    }), [modal, roomToDelete, roomList, realmToDelete, loadingText, failedConnectionMessage, disconnectedMessage, errorModal])
 
     useEffect(() => {
         if (modal !== 'None') {

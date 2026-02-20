@@ -1,14 +1,8 @@
 import { Pool } from 'pg'
 
-
 const pool = new Pool({
-    user: 'postgres',
-    password: '123456789',
-    host: 'localhost',
-    port: 5432,
-    database: 'game1',
+    connectionString: process.env.DATABASE_URL,
+    ssl: process.env.NODE_ENV === 'production' ? { rejectUnauthorized: false } : false,
 })
-
-console.log('Using hardcoded DB: game1 on localhost:5432')
 
 export default pool
