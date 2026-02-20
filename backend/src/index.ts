@@ -26,6 +26,9 @@ const io = new SocketIOServer(server, {
   }
 })
 
+// Health check
+app.get('/', (req, res) => res.status(200).json({ status: 'ok' }))
+
 // Auth routes
 app.use('/auth', authRoutes())
 
