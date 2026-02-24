@@ -47,15 +47,17 @@ export default async function Play({ params, searchParams }: { params: { id: str
     }
 
     return (
-        <PlayClient 
-            mapData={realm.map_data} 
-            username={user.username} 
-            access_token={token} 
-            realmId={params.id} 
-            uid={user.id} 
-            shareId={searchParams.shareId || ''} 
+        <PlayClient
+            mapData={realm.map_data}
+            username={user.username}
+            access_token={token}
+            realmId={params.id}
+            uid={user.id}
+            shareId={searchParams.shareId || ''}
             initialSkin={user.skin || '009'}
             name={realm.name}
+            marketEnabled={realm.market_enabled ?? false}
+            marketPubkey={realm.market_pubkey ?? null}
         />
     )
 }

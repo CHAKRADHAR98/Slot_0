@@ -2,7 +2,7 @@ import React from 'react'
 
 type SpecialTileItemProps = {
     children: React.ReactNode
-    iconColor: 'red' | 'blue' | 'green' | 'yellow'
+    iconColor: 'red' | 'blue' | 'green' | 'yellow' | 'purple'
     title: string,
     description: string
     selected: boolean
@@ -21,6 +21,8 @@ const SpecialTileItem:React.FC<SpecialTileItemProps> = ({ children, iconColor, t
                 return 'bg-green-500'
             case 'yellow':
                 return 'bg-yellow-500'
+            case 'purple':
+                return 'bg-purple-500'
         }
     }
 

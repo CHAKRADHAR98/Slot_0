@@ -58,43 +58,57 @@ const RealmsMenu:React.FC<RealmsMenuProps> = ({ realms, errorMessage }) => {
         <>
             {/* Mobile View */}
             <div className='flex flex-col items-center p-4 gap-2 sm:hidden'>
-                {realms.length === 0 && <p className='text-center'>You have no spaces you can join. Create one on desktop to get started!</p>}
+                {realms.length === 0 && (
+                    <p className='text-center text-gray-600 font-orbitron text-xs tracking-wider uppercase mt-8'>
+                        No spaces found. Create one on desktop to get started.
+                    </p>
+                )}
                 {realms.map((realm, index) => {
-
                     function selectRealm() {
                         setSelectedRealm(realm)
                     }
-
                     return (
-                        <BasicButton key={realm.id} className={`w-full h-12 border-4 border-transparent flex flex-row items-center justify-between ${selectedRealm?.id === realm.id ? 'border-white' : ''}`} onClick={selectRealm}>
-                            <p className='text-button text-xl text-left'>{realm.name}</p>
-                            {playerCounts[index] !== undefined && <div className='rounded-full grid place-items-center w-8 h-8 font-bold bg-green-500'>
-                                {playerCounts[index]}
-                            </div>}
-                        </BasicButton>
+                        <button
+                            key={realm.id}
+                            className={`w-full h-12 border flex flex-row items-center justify-between px-4 transition-all duration-200 font-orbitron text-sm tracking-wider ${
+                                selectedRealm?.id === realm.id
+                                    ? 'border-cyber-cyan text-cyber-cyan bg-cyber-cyan/5'
+                                    : 'border-panel-border text-gray-400 hover:border-cyber-cyan/40 hover:text-gray-300'
+                            }`}
+                            onClick={selectRealm}
+                        >
+                            <span className='uppercase'>{realm.name}</span>
+                            {playerCounts[index] !== undefined && (
+                                <div className='flex items-center gap-1.5'>
+                                    <div className='w-2 h-2 rounded-full bg-neon-green shadow-[0_0_4px_rgba(20,241,149,0.8)]' />
+                                    <span className='text-xs text-neon-green'>{playerCounts[index]}</span>
+                                </div>
+                            )}
+                        </button>
                     )
                 })}
-                <div className='fixed bottom-0 w-full bg-primary grid place-items-center p-2'>
-                     <BasicButton className='w-[90%] text-xl px-0 py-0' disabled={selectedRealm === null} onClick={() => router.push(getLink())}>
-                        Join Space
+                <div className='fixed bottom-0 w-full bg-dark-panel border-t border-panel-border grid place-items-center p-3'>
+                    <BasicButton className='w-[90%]' disabled={selectedRealm === null} onClick={() => router.push(getLink())}>
+                        Enter Space
                     </BasicButton>
                 </div>
             </div>
 
             {/* Desktop View */}
             <div className='flex-col items-center w-full p-8 hidden sm:flex'>
-                {realms.length === 0 && <p className='text-center'>You have no spaces you can join. Create a space to get started!</p>}
-                <div className='hidden sm:grid grid-cols-2 md:grid-cols-3 gap-8 w-full'>
-                    {realms.map((realm, index) => {
-                        return (
-                            <DesktopRealmItem key={realm.id} name={realm.name} id={realm.id} shareId={realm.share_id} shared={realm.shared} playerCount={playerCounts[index]}/>
-                        )
-                    })}
+                {realms.length === 0 && (
+                    <div className='flex flex-col items-center gap-3 mt-16'>
+                        <p className='text-gray-600 font-orbitron text-xs tracking-[0.3em] uppercase'>No spaces detected</p>
+                        <p className='text-gray-700 text-sm'>Create a space to get started.</p>
+                    </div>
+                )}
+                <div className='hidden sm:grid grid-cols-2 md:grid-cols-3 gap-6 w-full'>
+                    {realms.map((realm, index) => (
+                        <DesktopRealmItem key={realm.id} name={realm.name} id={realm.id} shareId={realm.share_id} shared={realm.shared} playerCount={playerCounts[index]}/>
+                    ))}
                 </div>
             </div>
-            
         </>
-        
     )
 }
 

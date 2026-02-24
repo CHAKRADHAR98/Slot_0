@@ -65,6 +65,7 @@ export class Player {
     private strikes: number = 0
 
     private currentChannel: string = 'local'
+    private lastMarketTileKey: string | null = null
 
     constructor(skin: string, playApp: PlayApp, username: string, isLocal: boolean = false) {
         this.skin = skin
@@ -310,6 +311,17 @@ export class Player {
                 videoChat.leaveChannel()
                 this.playApp.fadeOutTiles()
             }
+        }
+
+        // Market tile detection — fire only on first entry, not every frame
+        const tileKey = `${newTilePosition.x}, ${newTilePosition.y}`
+        if (tile && tile.marketAreaId) {
+            if (this.lastMarketTileKey !== tileKey) {
+                this.lastMarketTileKey = tileKey
+                signal.emit('enterMarketArea')
+            }
+        } else {
+            this.lastMarketTileKey = null
         }
     }
 

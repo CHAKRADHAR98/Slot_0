@@ -13,6 +13,7 @@ const TileSchema = z.object({
   impassable: z.boolean().optional(),
   teleporter: TeleporterSchema.optional(),
   privateAreaId: z.string().optional(),
+  marketAreaId: z.string().optional(),
 })
 
 const TileMapSchema = z.record(z.string().regex(/^(-?\d+), (-?\d+)$/), TileSchema)

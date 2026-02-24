@@ -1,7 +1,6 @@
 use anchor_lang::prelude::*;
 
 use crate::{
-    admin_check,
     constant::*,
     error::GatherError,
     state::*,
@@ -30,7 +29,14 @@ pub struct Resolve<'info> {
 
 impl<'info> Resolve<'info> {
     pub fn resolve_market(&mut self, outcome: MarketOutcome) -> Result<()> {
-        admin_check!(self);
+        // Allow the realm_authority (the map creator who owns this market) OR a global admin
+        let is_realm_authority = self.admin.key() == self.gather_market.realm_authority;
+        let is_global_admin = self
+            .gather_config
+            .admin
+            .iter()
+            .any(|admin_pubkey| self.admin.key() == *admin_pubkey);
+        require!(is_realm_authority || is_global_admin, GatherError::UnAuthourized);
 
         require!(
             Clock::get()?.unix_timestamp >= self.gather_market.dead_line,
@@ -44,7 +50,7 @@ impl<'info> Resolve<'info> {
                     self.gather_market.market_state = MarketStatus::Resolved;
                 }
                 MarketOutcome::NO => {
-                    self.gather_market.market_outcome = MarketOutcome::YES;
+                    self.gather_market.market_outcome = MarketOutcome::NO;
                     self.gather_market.market_state = MarketStatus::Resolved;
                 }
                 MarketOutcome::NotResolved => {}

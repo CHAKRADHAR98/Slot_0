@@ -57,52 +57,63 @@ const DesktopRealmItem:React.FC<DesktopRealmItemProps> = ({ name, id, shareId, s
     }
 
     return (
-        <div className='relative select-none'>
+        <div className='relative select-none group'>
             <Link href={getLink()}>
-                <div className='w-full aspect-video relative rounded-3xl border-4 border-transparent hover:border-light-secondary overflow-hidden'>
-                    {/* Background pulse animation */}
-                    <div className='animate-pulse bg-secondary absolute inset-0' />
-                    
+                <div className='w-full aspect-video relative border border-panel-border overflow-hidden transition-all duration-300 group-hover:border-cyber-cyan/50 group-hover:shadow-[0_0_20px_rgba(0,245,255,0.12)]'>
+                    {/* Dark base */}
+                    <div className='absolute inset-0 bg-dark-panel' />
+
                     {/* Thumbnail image */}
-                    <img 
-                        src='/thumbnail.png' 
-                        className='absolute z-10' 
-                        style={{imageRendering: 'pixelated'}} 
+                    <img
+                        src='/thumbnail.png'
+                        className='absolute z-10 w-full h-full object-cover opacity-70 group-hover:opacity-90 transition-opacity duration-300'
+                        style={{imageRendering: 'pixelated'}}
                     />
-                    
-                    {/* Hover effect and sign-in icon */}
-                    <div className='absolute inset-0 grid place-items-center z-20 opacity-0 hover:opacity-100 transition-opacity duration-300'>
-                        <div className='rounded-full bg-black bg-opacity-70 grid place-items-center absolute p-2'>
-                            <SignIn className='w-8 h-8' />
+
+                    {/* Hover overlay */}
+                    <div className='absolute inset-0 grid place-items-center z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/50'>
+                        <div className='flex items-center gap-2 border border-cyber-cyan/60 px-4 py-2 bg-dark-panel/80'>
+                            <SignIn className='w-4 h-4 text-cyber-cyan' />
+                            <span className='text-cyber-cyan text-xs font-orbitron tracking-widest uppercase'>Enter</span>
                         </div>
                     </div>
-                    
-                    {/* Player count indicator */}
+
+                    {/* Player count */}
                     {playerCount != null && (
-                        <div className='pointer-events-none absolute top-2 left-2 rounded-full px-2 py-1 flex items-center gap-2 bg-black bg-opacity-80 max-w-max z-30'>
-                            <div className='bg-green-500 w-3 h-3 rounded-full' />
-                            <p className='text-sm'>{playerCount}</p>
+                        <div className='pointer-events-none absolute top-2 left-2 flex items-center gap-1.5 bg-dark-panel/90 border border-panel-border px-2 py-1 z-30'>
+                            <div className='w-2 h-2 rounded-full bg-neon-green shadow-[0_0_6px_rgba(20,241,149,0.8)]' />
+                            <p className='text-xs text-gray-300 font-orbitron'>{playerCount}</p>
                         </div>
                     )}
+
+                    {/* Corner accent */}
+                    <div className='absolute top-0 right-0 w-4 h-4 border-t border-r border-cyber-cyan/20 group-hover:border-cyber-cyan/60 transition-colors duration-300 z-30' />
                 </div>
             </Link>
-            <div className='mt-2 flex flex-row justify-between'>
-                <p className='text-sm font-semibold'>{name}</p>
+
+            <div className='mt-2 flex flex-row justify-between items-center'>
+                <p className='text-sm font-orbitron text-gray-400 tracking-wider group-hover:text-cyber-cyan transition-colors duration-200'>{name}</p>
                 {!shared && (
                     <div className='flex flex-row'>
-                        <LinkIcon className='h-7 w-7 cursor-pointer hover:bg-[#545C8E] rounded-md p-1 animate-colors' onClick={copyShareLink}/>
-                    <div ref={dotsRef}>
-                        <DotsThreeVertical weight='bold' className='h-7 w-7 cursor-pointer hover:bg-[#545C8E] rounded-md p-1 animate-colors' onClick={handleDotsClick}/>
+                        <LinkIcon className='h-7 w-7 cursor-pointer text-gray-600 hover:text-cyber-cyan p-1 transition-colors duration-200' onClick={copyShareLink}/>
+                        <div ref={dotsRef}>
+                            <DotsThreeVertical weight='bold' className='h-7 w-7 cursor-pointer text-gray-600 hover:text-cyber-cyan p-1 transition-colors duration-200' onClick={handleDotsClick}/>
+                        </div>
                     </div>
-                </div>)}
+                )}
             </div>
+
             {showMenu && (
-                <div className='absolute w-36 h-24 rounded-lg bg-white right-0 flex flex-col z-10 text-black' ref={menuRef}>
-                    <button className='grow w-full hover:bg-[#B2C5FF] rounded-t-lg text-left pl-4' onClick={() => router.push(`/editor/${id}`)}>
+                <div className='absolute w-40 right-0 bg-dark-panel border border-panel-border flex flex-col z-10' ref={menuRef}>
+                    <button className='py-2.5 px-4 text-left text-xs text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-colors duration-150 font-orbitron tracking-wider uppercase border-b border-panel-border' onClick={() => router.push(`/editor/${id}`)}>
                         Edit Map
                     </button>
-                    <button className='grow w-full hover:bg-[#B2C5FF] text-left pl-4' onClick={() => router.push(`/manage/${id}`)}>Manage</button>
-                    <button className='grow w-full hover:bg-red-500 hover:text-white rounded-b-lg text-left pl-4' onClick={handleDelete}>Delete</button>
+                    <button className='py-2.5 px-4 text-left text-xs text-gray-400 hover:text-cyber-cyan hover:bg-cyber-cyan/5 transition-colors duration-150 font-orbitron tracking-wider uppercase border-b border-panel-border' onClick={() => router.push(`/manage/${id}`)}>
+                        Manage
+                    </button>
+                    <button className='py-2.5 px-4 text-left text-xs text-gray-400 hover:text-red-400 hover:bg-red-500/5 transition-colors duration-150 font-orbitron tracking-wider uppercase' onClick={handleDelete}>
+                        Delete
+                    </button>
                 </div>
             )}
         </div>

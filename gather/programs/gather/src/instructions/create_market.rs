@@ -13,7 +13,6 @@ use anchor_spl::{
 use rust_decimal::prelude::*;
 
 use crate::{
-    admin_check,
     constant::{GATHER_CONFIG, MARKET, MARKET_VAULT, MINIMUM_LMSR_B, MINT_NO, MINT_YES},
     decimal_convo,
     error::GatherError,
@@ -91,15 +90,16 @@ impl<'info> CreateMarket<'info> {
         arg: MarketArg,
         metadata_arg: InitTokenArg,
     ) -> Result<()> {
-        admin_check!(self);
+        // No global admin check here — whoever signs this transaction becomes the realm_authority
+        // for this market. The caller (realm owner) is responsible for ensuring they are the
+        // correct realm owner before sending this transaction.
 
         // Check: The Liquidity Parameter should pass the minimum threshold
         require_gte!(arg.lmsr_b, MINIMUM_LMSR_B, GatherError::ParameterTooLow);
 
         require!(arg.name.len() < 50, GatherError::MaxLenght);
 
-        // intialized the LMSR
-        // Initialize the market
+        // Initialize the market, storing the signer as the realm_authority
         self.gather_market.init_gathermarket(GatherMarket {
             market_name: arg.name,
             description: arg.description,
@@ -113,6 +113,8 @@ impl<'info> CreateMarket<'info> {
 
             outcome_yes_shares: 0,
             outcome_no_shares: 0,
+
+            realm_authority: self.admin.key(),
 
             mint_yes_bump: bump.mint_yes,
             mint_no_bump: bump.mint_no,

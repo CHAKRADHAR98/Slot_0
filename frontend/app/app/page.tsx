@@ -28,9 +28,15 @@ export default async function App() {
     ]
 
     return (
-        <div>
+        <div className='min-h-screen cyber-bg'>
             <Navbar />
-            <h1 className='text-3xl pl-4 sm:pl-8 pt-8'>Your Spaces</h1>
+            <div className='pt-8 px-4 sm:px-8'>
+                <div className='flex items-center gap-3'>
+                    <span className='text-cyber-cyan font-orbitron text-xs tracking-[0.4em] opacity-60'>&gt;</span>
+                    <h1 className='font-orbitron font-bold text-2xl tracking-wider text-white'>YOUR SPACES</h1>
+                </div>
+                <div className='w-48 h-px bg-gradient-to-r from-cyber-cyan/50 to-transparent mt-2' />
+            </div>
             <RealmsMenu realms={realms} errorMessage=''/>
         </div>
     )

@@ -116,6 +116,12 @@ export class EditorApp extends App {
                 const sprite = this.placePrivateAreaSprite(x, y)
                 this.setUpEraserTool(sprite, x, y, 'gizmo')
             }
+
+            if (value.marketAreaId) {
+                const [x, y] = key.split(',').map(Number)
+                const sprite = this.placeMarketAreaSprite(x, y)
+                this.setUpEraserTool(sprite, x, y, 'gizmo')
+            }
         }
 
         if (this.currentRoomIndex === this.realmData.spawnpoint.roomIndex) {
@@ -469,6 +475,9 @@ export class EditorApp extends App {
         } else if (type === 'Private Area') {
             this.placePrivateArea(x, y, tile, snapshot)
             return
+        } else if (type === 'Market') {
+            this.placeMarketArea(x, y, tile, snapshot)
+            return
         }
 
         this.layers[layer as Layer].addChild(tile)
@@ -728,6 +737,39 @@ export class EditorApp extends App {
         this.updateRealmData(newRealmData, snapshot)
     }
 
+    private placeMarketArea = (x: number, y: number, tile: PIXI.Sprite, snapshot: boolean) => {
+        const key = `${x}, ${y}` as TilePoint
+        if ((this.realmData.spawnpoint.x === x && this.realmData.spawnpoint.y === y) ||
+            this.realmData.rooms[this.currentRoomIndex].tilemap[key]?.teleporter ||
+            this.realmData.rooms[this.currentRoomIndex].tilemap[key]?.privateAreaId ||
+            this.realmData.rooms[this.currentRoomIndex].tilemap[key]?.marketAreaId) {
+            return
+        }
+        this.addMarketAreaToRealmData(x, y, snapshot)
+        this.placeMarketAreaSprite(x, y, tile)
+    }
+
+    private placeMarketAreaSprite = (x: number, y: number, tile?: PIXI.Sprite) => {
+        const key = `${x}, ${y}` as TilePoint
+        const sprite = tile || new PIXI.Sprite(PIXI.Texture.from('/sprites/teleport-tile.png'))
+        sprite.tint = 0xAA44FF
+        sprite.x = x * 32
+        sprite.y = y * 32
+        this.gizmoContainer.addChild(sprite)
+        this.gizmoSprites[key] = sprite
+        return sprite
+    }
+
+    private addMarketAreaToRealmData = (x: number, y: number, snapshot: boolean) => {
+        const key = `${x}, ${y}` as TilePoint
+        const newRealmData = this.getRealmDataCopy()
+        newRealmData.rooms[this.currentRoomIndex].tilemap[key] = {
+            ...newRealmData.rooms[this.currentRoomIndex].tilemap[key],
+            marketAreaId: 'market'
+        }
+        this.updateRealmData(newRealmData, snapshot)
+    }
+
     private removeGizmoFromRealmData = (x: number, y: number, snapshot: boolean) => {
         const key = `${x}, ${y}` as TilePoint
         const newRealmData = this.getRealmDataCopy()
@@ -735,6 +777,7 @@ export class EditorApp extends App {
             delete newRealmData.rooms[this.currentRoomIndex].tilemap[key].impassable
             delete newRealmData.rooms[this.currentRoomIndex].tilemap[key].teleporter
             delete newRealmData.rooms[this.currentRoomIndex].tilemap[key].privateAreaId
+            delete newRealmData.rooms[this.currentRoomIndex].tilemap[key].marketAreaId
 
             // delete the key if no data on it
             if (Object.keys(newRealmData.rooms[this.currentRoomIndex].tilemap[key]).length === 0) {
@@ -935,6 +978,11 @@ export class EditorApp extends App {
             const privateAreaTile = new PIXI.Sprite(PIXI.Texture.from('/sprites/private-tile.png'))
             const layer = 'gizmo'
             return { data: {} as SpriteSheetTile, layer, tile: privateAreaTile, type: 'Private Area' }
+        } else if (this.specialTileMode === 'Market') {
+            const marketTile = new PIXI.Sprite(PIXI.Texture.from('/sprites/teleport-tile.png'))
+            marketTile.tint = 0xAA44FF
+            const layer = 'gizmo'
+            return { data: {} as SpriteSheetTile, layer, tile: marketTile, type: 'Market' }
         }
 
         const data = sprites.getSpriteData(this.selectedPalette, this.selectedTile)
@@ -1209,7 +1257,7 @@ export class EditorApp extends App {
             return 'Single'
         }
 
-        if (this.specialTileMode === 'Private Area') {
+        if (this.specialTileMode === 'Private Area' || this.specialTileMode === 'Market') {
             return 'Rectangle'
         }
 

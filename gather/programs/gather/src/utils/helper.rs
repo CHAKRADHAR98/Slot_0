@@ -60,6 +60,9 @@ impl GatherMarket {
         self.outcome_yes_shares = arg.outcome_yes_shares;
         self.outcome_no_shares = arg.outcome_no_shares;
 
+        // realm authority (wallet of the realm owner who created this market)
+        self.realm_authority = arg.realm_authority;
+
         // bumps
         self.mint_yes_bump = arg.mint_yes_bump;
         self.mint_no_bump = arg.mint_no_bump;
