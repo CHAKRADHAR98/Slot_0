@@ -1,7 +1,7 @@
 import React from 'react'
 import SpecialTileItem from './SpecialTileItem'
 import { SpecialTile } from '@/utils/pixi/types'
-import { Placeholder, FlyingSaucer, Tree, Desk, ChartLineUp } from '@phosphor-icons/react'
+import { Placeholder, FlyingSaucer, Tree, Desk, ChartLineUp, CurrencyDollar } from '@phosphor-icons/react'
 
 type SpecialTilesProps = {
     specialTile: SpecialTile
@@ -51,6 +51,14 @@ const SpecialTiles:React.FC<SpecialTilesProps> = ({ specialTile, selectSpecialTi
                 selected={specialTile === 'Market'}
                 onClick={() => selectSpecialTile('Market')}>
                 <ChartLineUp className='w-12 h-12'/>
+            </SpecialTileItem>
+            <SpecialTileItem
+                iconColor='green'
+                title='SOL Well'
+                description='A community SOL pool. Developers can deposit surplus SOL or withdraw up to 1 SOL/day.'
+                selected={specialTile === 'SolPool'}
+                onClick={() => selectSpecialTile('SolPool')}>
+                <CurrencyDollar className='w-12 h-12'/>
             </SpecialTileItem>
         </div>
     )

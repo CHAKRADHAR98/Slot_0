@@ -1,13 +1,21 @@
 'use client'
 import React, { useEffect, useState } from 'react'
-import PixiApp from './PixiApp'
+import dynamic from 'next/dynamic'
 import { RealmData } from '@/utils/pixi/types'
-import PlayNavbar from './PlayNavbar'
+
+// These components pull in Agora which accesses `window` at module load time.
+// `ssr: false` skips server-rendering for the entire import tree of each one.
+const PixiApp = dynamic(() => import('./PixiApp'), { ssr: false })
+const PlayNavbar = dynamic(() => import('./PlayNavbar'), { ssr: false })
+const VideoBar = dynamic(() => import('@/components/VideoChat/VideoBar'), { ssr: false })
+const AgoraVideoChatProvider = dynamic(
+    () => import('../hooks/useVideoChat').then(m => ({ default: m.AgoraVideoChatProvider })),
+    { ssr: false }
+)
+const IntroScreen = dynamic(() => import('./IntroScreen'), { ssr: false })
 import { useModal } from '../hooks/useModal'
 import signal from '@/utils/signal'
-import IntroScreen from './IntroScreen'
-import VideoBar from '@/components/VideoChat/VideoBar'
-import { AgoraVideoChatProvider } from '../hooks/useVideoChat'
+import SolPoolPanel from './SolPoolPanel'
 
 type PlayClientProps = {
     mapData: RealmData
@@ -28,6 +36,7 @@ const PlayClient:React.FC<PlayClientProps> = ({ mapData, username, access_token,
 
     const [showIntroScreen, setShowIntroScreen] = useState(true)
     const [showMarketPrompt, setShowMarketPrompt] = useState(false)
+    const [showSolPool, setShowSolPool] = useState(false)
 
     const [skin, setSkin] = useState(initialSkin)
 
@@ -50,16 +59,22 @@ const PlayClient:React.FC<PlayClientProps> = ({ mapData, username, access_token,
             setShowMarketPrompt(true)
         }
 
+        const onEnterSolPool = () => {
+            setShowSolPool(true)
+        }
+
         signal.on('showKickedModal', onShowKickedModal)
         signal.on('showDisconnectModal', onShowDisconnectModal)
         signal.on('switchSkin', onSwitchSkin)
         signal.on('enterMarketArea', onEnterMarketArea)
+        signal.on('enterSolPool', onEnterSolPool)
 
         return () => {
             signal.off('showKickedModal', onShowKickedModal)
             signal.off('showDisconnectModal', onShowDisconnectModal)
             signal.off('switchSkin', onSwitchSkin)
             signal.off('enterMarketArea', onEnterMarketArea)
+            signal.off('enterSolPool', onEnterSolPool)
         }
     }, [marketEnabled])
 
@@ -78,6 +93,11 @@ const PlayClient:React.FC<PlayClientProps> = ({ mapData, username, access_token,
                     initialSkin={skin}
                 />
                 <PlayNavbar username={username} skin={skin}/>
+
+                {/* Sol Pool Panel */}
+                {showSolPool && (
+                    <SolPoolPanel realmId={realmId} onClose={() => setShowSolPool(false)} />
+                )}
 
                 {/* Market Portal Prompt */}
                 {showMarketPrompt && (

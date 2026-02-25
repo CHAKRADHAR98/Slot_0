@@ -66,6 +66,7 @@ export class Player {
 
     private currentChannel: string = 'local'
     private lastMarketTileKey: string | null = null
+    private lastSolPoolTileKey: string | null = null
 
     constructor(skin: string, playApp: PlayApp, username: string, isLocal: boolean = false) {
         this.skin = skin
@@ -322,6 +323,16 @@ export class Player {
             }
         } else {
             this.lastMarketTileKey = null
+        }
+
+        // SolPool tile detection — fire only on first entry, not every frame
+        if (tile && tile.solPoolId) {
+            if (this.lastSolPoolTileKey !== tileKey) {
+                this.lastSolPoolTileKey = tileKey
+                signal.emit('enterSolPool', tile.solPoolId)
+            }
+        } else {
+            this.lastSolPoolTileKey = null
         }
     }
 
